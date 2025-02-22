@@ -1,0 +1,8 @@
+---
+# Variables pour le déploiement de l'application Java
+app_name: "java-app"  # Nom du service systemd
+app_user: "{{ saif }}"  # Utilisateur sous lequel l'application sera exécutée
+app_directory: "/opt/app"  # Répertoire où l'application sera déployée
+app_jar: "app.jar"  # Nom du fichier JAR de l'application
+app_port: 8080  # Port sur lequel l'application écoute
+java_opts: "-Xmx512m"  # Options JVM (mémoire allouée)

@@ -1,0 +1,14 @@
+[Unit]
+Description=Java Application Service
+After=network.target
+
+[Service]
+User={{ ansible_user }}  # Utilisateur sous lequel le service sera exécuté
+ExecStart=/usr/bin/java -jar /opt/app/app.jar  # Commande pour démarrer l'application
+SuccessExitStatus=143  # Code de sortie pour un arrêt propre
+Restart=always  # Redémarrer automatiquement en cas de crash
+RestartSec=5  # Délai avant de redémarrer (en secondes)
+Environment="JAVA_OPTS=-Xmx512m"  # Options JVM (optionnel)
+
+[Install]
+WantedBy=multi-user.target  # Démarre le service au démarrage du système

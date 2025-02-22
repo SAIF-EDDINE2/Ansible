@@ -1,0 +1,55 @@
+---
+- name: Déployer l'application Java sur les serveurs cibles
+  hosts: servers  
+  become: yes     
+  tasks:
+    - name: Installer Java (JDK 11)
+      apt:
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+
+    - name: Créer le répertoire de l'application
+      file:
+        path: /opt/app
+        state: directory
+        owner: "{{ saif }}"
+        group: "{{ saif }}"
+        mode: '0755'
+
+    - name: Copier l'application Java (fichier JAR)
+      copy:
+        src: files/app.jar  
+        dest: /opt/app/app.jar
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+
+    - name: Configurer le service systemd pour l'application Java
+      template:
+        src: roles/java_app_deploy/templates/java-app.service.j2  
+        dest: /etc/systemd/system/java-app.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Recharger systemd pour prendre en compte le nouveau service
+      systemd:
+        daemon_reload: yes
+
+    - name: Démarrer et activer le service Java
+      systemd:
+        name: java-app
+        state: started
+        enabled: yes
+
+    - name: Vérifier que l'application est en cours d'exécution
+      uri:
+        url: "http://localhost:8080"  # Remplacez 8080 par le port utilisé par votre application
+        method: GET
+        status_code: 200
+      register: result
+
+    - name: Afficher le résultat de la vérification
+      debug:
+        var: result

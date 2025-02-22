@@ -1,0 +1,21 @@
+- name: Install Java
+  apt:
+    name: openjdk-11-jdk
+    state: present
+    update_cache: yes
+
+- name: Copy Java application
+  copy:
+    src: ../../files/app.jar  # Chemin relatif vers le fichier JAR dans `files/`
+    dest: /opt/app/app.jar    # Destination sur le serveur cible
+
+- name: Create systemd service
+  template:
+    src: java-app.service.j2  # Template pour le service systemd
+    dest: /etc/systemd/system/java-app.service
+
+- name: Start and enable Java application service
+  systemd:
+    name: java-app
+    state: started
+    enabled: yes

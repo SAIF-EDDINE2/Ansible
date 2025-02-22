@@ -1,0 +1,11 @@
+---
+# Handlers pour le déploiement de l'application Java
+- name: Restart Java application
+  systemd:
+    name: "{{ java-app }}"  # Nom du service systemd (défini dans vars/main.yml)
+    state: restarted
+    enabled: yes
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
